@@ -7,51 +7,43 @@ const contactsInitialState = {
   error: null,
 };
 
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleError = (state, { payload }) => {
+  state.isLoading = false;
+  state.error = payload;
+};
+
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
 
   extraReducers: {
-    [fetchContacts.pending](state) {
-      state.isLoading = true;
-    },
-    [fetchContacts.fulfilled](state, actions) {
+    [fetchContacts.pending]: handlePending,
+    [fetchContacts.fulfilled](state, { payload }) {
       state.isLoading = false;
       state.error = null;
-      state.items = actions.payload;
+      state.items = payload;
     },
-    [fetchContacts.error](state, actions) {
-      state.isLoading = false;
-      state.error = actions.payload;
-    },
+    [fetchContacts.error]: handleError,
 
-    [addContact.pending](state) {
-      state.isLoading = true;
-    },
-    [addContact.fulfilled](state, actions) {
+    [addContact.pending]: handlePending,
+    [addContact.fulfilled](state, { payload }) {
       state.isLoading = false;
       state.error = null;
-      state.items.push(actions.payload);
+      state.items.push(payload);
     },
-    [addContact.error](state, actions) {
-      state.isLoading = false;
-      state.error = actions.payload;
-    },
+    [addContact.error]: handleError,
 
-    [deleteContact.pending](state) {
-      state.isLoading = true;
-    },
-    [deleteContact.fulfilled](state, actions) {
+    [deleteContact.pending]: handlePending,
+    [deleteContact.fulfilled](state, { payload: { id } }) {
       state.isLoading = false;
       state.error = null;
-      state.items = state.items.filter(
-        contact => contact.id !== actions.payload.id
-      );
+      state.items = state.items.filter(contact => contact.id !== id);
     },
-    [deleteContact.error](state, actions) {
-      state.isLoading = false;
-      state.error = actions.payload;
-    },
+    [deleteContact.error]: handleError,
   },
 });
 
