@@ -1,26 +1,23 @@
 import React from 'react';
+import { ThreeDots } from 'react-loader-spinner';
+
 import ContactForm from './ContactForm/ContactForm';
 import Section from './Section/Section';
 import Contacts from './Contacts/Contacts';
 import Filter from './FIlter/Filter';
+import { useDispatch, useSelector } from 'react-redux';
+import { getError, getIsLoading } from 'redux/selectors';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
 
 export const App = () => {
-  // const [contacts, setContacts] = useState([]);
-  // const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
 
-  // useEffect(() => {
-  //   const savedContacts = localStorage.getItem('contacts');
-  //   const parsedContacts = JSON.parse(savedContacts);
-  //   if (parsedContacts) {
-  //     setContacts(parsedContacts);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (contacts.length !== 0) {
-  //     localStorage.setItem('contacts', JSON.stringify(contacts));
-  //   }
-  // }, [contacts]);
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
     <div
@@ -35,7 +32,20 @@ export const App = () => {
 
       <Section title={'Contacts'}>
         <Filter />
-        <Contacts />
+        {isLoading && !error ? (
+          <ThreeDots
+            height="80"
+            width="80"
+            radius="9"
+            color="#aaa"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        ) : (
+          <Contacts />
+        )}
       </Section>
     </div>
   );

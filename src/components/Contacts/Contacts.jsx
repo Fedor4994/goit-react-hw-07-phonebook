@@ -2,9 +2,9 @@ import React from 'react';
 import s from './Contacts.module.css';
 import Contact from 'components/Contact/Contact';
 
-import { deleteContact } from 'redux/contactsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from 'redux/selectors';
+import { deleteContact } from 'redux/operations';
 
 const Contacts = () => {
   const dispatch = useDispatch();

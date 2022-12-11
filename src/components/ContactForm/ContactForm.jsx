@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import s from './ContactForm.module.css';
-import { nanoid } from 'nanoid';
 
-import { addContact } from 'redux/contactsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ const ContactForm = () => {
     if (isRepeatedContact) {
       alert(`${name} is already in contacts`);
     } else {
-      dispatch(addContact({ name, number, id: nanoid() }));
+      dispatch(addContact({ name, number }));
     }
 
     reset();
