@@ -1,30 +1,24 @@
 import React, { useState } from 'react';
+import { useAddContactMutation } from 'redux/contactsApi';
 import s from './ContactForm.module.css';
+import { Puff } from 'react-loader-spinner';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
-import { addContact } from 'redux/operations';
-
-const ContactForm = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+const ContactForm = ({ contacts }) => {
+  const [addContact, { isLoading }] = useAddContactMutation();
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-
   const onNameChange = event => setName(event.target.value);
   const onNumberChange = event => setNumber(event.target.value);
 
   const onSubmit = event => {
     event.preventDefault();
     const isRepeatedContact = contacts.find(contact => contact.name === name);
-
     if (isRepeatedContact) {
       alert(`${name} is already in contacts`);
     } else {
-      dispatch(addContact({ name, number }));
+      addContact({ name, number });
     }
-
     reset();
   };
 
@@ -63,8 +57,20 @@ const ContactForm = () => {
         />
       </label>
 
-      <button type="submit" className={s.submitButton}>
-        Add contact
+      <button disabled={isLoading} type="submit" className={s.submitButton}>
+        {isLoading && (
+          <Puff
+            height="12"
+            width="12"
+            radisu={1}
+            color="#4fa94d"
+            ariaLabel="puff-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        )}
+        {isLoading ? 'Adding' : 'Add contact'}
       </button>
     </form>
   );

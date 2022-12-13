@@ -1,24 +1,21 @@
 import React from 'react';
 import s from './Contacts.module.css';
 import Contact from 'components/Contact/Contact';
+import { useSelector } from 'react-redux';
+import { getFilter } from 'redux/selectors';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
-import { deleteContact } from 'redux/operations';
+const Contacts = ({ contacts }) => {
+  const filter = useSelector(getFilter);
 
-const Contacts = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const visibleContacts = contacts.filter(({ name }) =>
+    name.toLowerCase().includes(filter.toLowerCase())
+  );
 
-  const onContactDelete = id => {
-    dispatch(deleteContact(id));
-  };
-
-  return contacts.length ? (
+  return visibleContacts.length ? (
     <ul className={s.contactsList}>
-      {contacts.map(contact => (
+      {visibleContacts.map(contact => (
         <li key={contact.id}>
-          <Contact onContactDelete={onContactDelete} contact={contact} />
+          <Contact contact={contact} />
         </li>
       ))}
     </ul>
